@@ -1,0 +1,1 @@
+Date and Time              | Up Time         | Ram Usage | CPU Usage | SSID Data           | Channel Data | Bandwidth Data               | Download Data | Upload Data
