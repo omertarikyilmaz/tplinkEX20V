@@ -10,6 +10,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
+#==================================================#
+# |Dosyaya Yazdirma Fonksiyonu| #
+
+# 'output_file' degiskeninin yolunu guncellemeyi unutma.
+
 output_file = r"C:\Users\owery\OneDrive\Masaüstü\Python\tplinkEX20v\logs.txt"
 
 def write_to_file(time_data, uptime, ram_usage, cpu_usage, wip_data, ssid_data2g, channel_data2g, bandwidth_data2g, ssid_data5g, channel_data5g, bandwidth_data5g, download_data, upload_data):
@@ -22,12 +27,16 @@ def write_to_file(time_data, uptime, ram_usage, cpu_usage, wip_data, ssid_data2g
                    f"{ssid_data5g.ljust(24)}|{channel_data5g.ljust(14)}|{bandwidth_data5g.ljust(17)}|"
                    f"{download_data.ljust(11)}|{upload_data.ljust(11)}|\n")
 
-    #----------------------------Interface Giris-----------------------------------#
+#==================================================#
+# |Ara Yuzu Acan Fonksiyon| #
 def OPENINTERFACE(driver):
     driver.get("http://192.168.1.1/")
     time.sleep(2)
     print("Arayuz acildi.")
+#==================================================#
+# |Arayuze Giris Yapan Fonksiyon| #
 
+# Kullanici adini ve sifreyi guncel tutmayi unutma.
 def LOGINPANEL(driver):
     try:
         userName = "admin"
@@ -53,26 +62,20 @@ def LOGINPANEL(driver):
         print("No pop-up alert appeared.")
     except Exception as e:
         print(f"Error handling alert: {e}")
-    #----------------------------------------------------------------------------------------# 
-   
-   
-    #--------------------------------Sistem Verileri----------------------------------#
+#==================================================#
 def UPTIME(driver):
     uptimeValue = driver.find_element(By.XPATH, "//div[@id='main']/div/div/p[5]/span")
     uptime = uptimeValue.text
     return uptime
 
 def RAM_USAGE(driver):
-    # Total RAM is a constant value you already know
-    total_ram = 423064  # Total RAM in KB
+    total_ram = 423064
 
-    # Extract the free RAM value (assumed to be in KB)
     ram_free_element = driver.find_element(By.ID, "memFree")
-    ram_free = int(ram_free_element.text)  # Convert the free RAM value to an integer
+    ram_free = int(ram_free_element.text)
 
-    # Calculate used RAM percentage
     ram_used_percentage = ((total_ram - ram_free) / total_ram) * 100
-    ram_used_percentage = round(ram_used_percentage, 2)  # Round to 2 decimal places
+    ram_used_percentage = round(ram_used_percentage, 2)
 
     print(f"Used RAM: %{ram_used_percentage}")
     return f"%{ram_used_percentage}"
@@ -83,15 +86,13 @@ def CPU_USAGE(driver):
     cpuUsage = cpuUsing.text
     print(cpuUsage)
     return cpuUsage
-    #----------------------------------------------------------------------------------------#
+
 def WIP(driver):
     try:
-        # Wait for the WAN IP element to be visible, up to 10 seconds
         wanip = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, "//table[@id='wan_table']/tbody/tr[2]/td[4]"))
         )
         wipdata = wanip.text
-        # Extract the part before the '/' character
         wipdata = wipdata.split('/')[0]
         print("WAN IP:", wipdata)
         return wipdata
@@ -99,14 +100,13 @@ def WIP(driver):
         print("Error: WAN IP element not found.")
         return None
 
-    #--------------------------------SSID: 2.4 GHZ Verileri----------------------------------#
 def SSID_DATA1(driver):
     ssid1 = driver.find_element(By.XPATH, "//div[@id='wlan1']/p[3]/span") 
     ssid_data1 = ssid1.text
     print("SSID Data (2.4 GHz) degeri alindi.")
     return ssid_data1
 
-def CH_DATA1(driver): #Sorun var
+def CH_DATA1(driver):
     ch1 = driver.find_element(By.ID, "wlchl0")
     ch1data = ch1.text
     print("Channel (2.4 GHz) degeri alindi.")
@@ -117,7 +117,6 @@ def BW_DATA1(driver):
     bw1data = bw1.text
     print("Bandwidth (2.4 GHz) degeri alindi.")
     return bw1data
-    #----------------------------------------------------------------------------------------#
 
 def WAN_IP(driver):
     wip = driver.find_element(By.XPATH, "//span[@id='wlssid1']")
@@ -125,14 +124,13 @@ def WAN_IP(driver):
     print("WAN IP degeri alindi.")
     return wipdata
 
-    #-----------------------------------SSID: 5 GHZ Verileri---------------------------------#
 def SSID_DATA2(driver):
     ssid2 = driver.find_element(By.XPATH, "(//div[@id='wlan1']/p[3]/span)[2]") 
     ssid_data2 = ssid2.text
     print("SSID Data (5 GHz) degeri alindi.")
     return ssid_data2
 
-def CH_DATA2(driver): #Sorun Var
+def CH_DATA2(driver):
     ch2 = driver.find_element(By.ID, "wlchl1")
     ch2data = ch2.text
     print("Channel (5 GHz) degeri alindi.")
@@ -143,7 +141,9 @@ def BW_DATA2(driver):
     bw2data = bw2.text
     print("Bandwidth (2.4 GHz) degeri alindi.")
     return bw2data
-    #----------------------------------------------------------------------------------------#
+#==================================================#
+# |DL ve UL Sayfasina Gider| #
+
 def dl_ul_datapage(driver):
     systemToolsButton = driver.find_element(By.ID, "menu_infomenu")
     systemToolsButton.click()
@@ -151,7 +151,7 @@ def dl_ul_datapage(driver):
     systemTrafficButton = driver.find_element(By.CSS_SELECTOR, "#menu_infomenutraffic")
     systemTrafficButton.click()
     time.sleep(8)
-
+#==================================================#
 def DOWNLOAD_DATA(driver):
     downloadspeed = driver.find_element(By.CSS_SELECTOR, "#pvc_stat_table tr:nth-child(1) > td:nth-child(9)")
     download_data = downloadspeed.text
@@ -161,6 +161,9 @@ def UPLOAD_DATA(driver):
     uploadspeed = driver.find_element(By.CSS_SELECTOR, "#pvc_stat_table tr:nth-child(1) > td:nth-child(8)")
     upload_data = uploadspeed.text
     return upload_data
+#==================================================#
+# |Fonksiyonlari Siralar ve Duzenler| #
+
 def main():
     driver = webdriver.Chrome(service=Service("C:/Program Files (x86)/chromedriver.exe"))
     OPENINTERFACE(driver)
